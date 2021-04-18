@@ -14,6 +14,13 @@
             hello world
         </h1>
     </header>
-
+    <div> 
+    <% searchResults.forEach( book => { %>
+        <img src="<%= book.image %>" alt="">
+        <h3><%= book.title %></h3>
+        <p><%= book.author %></p>
+        <p><%= book.description %></p>
+        <% }) %>
+        </div>
 </body>
 </html>
