@@ -61,7 +61,7 @@ function Book (info){
 function renderHomePage(req,res){
   // console.log(' in homepage');
   let SQL='SELECT * FROM books';
-  client.query(SQL).then( x=> res.render('pages/index',{library:x.rows})).catch(error=>res.send(error));
+  client.query(SQL).then( x=> res.render('pages/index',{books:x.rows})).catch(error=>res.send(error));
 
 }
 

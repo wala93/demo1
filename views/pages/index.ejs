@@ -14,14 +14,14 @@
            my book collection
         </h1>
     </header>
-   <% library.foreach(book=>{ %>
+    <% books.forEach(book=> { %>
    
-    <img src="<%= book.image %>" alt="">
+    <!-- <img src="<%= book.image %>" alt=""> -->
             <h3><%= book.title %></h3>
-            <p><%= book.author %></p>
+            <!-- <p><%= book.author %></p>
             <p><%= book.isbn %></p>
             <p><%= book.description %></p>
-   
+    -->
    
    <% }) %>
 </body>
