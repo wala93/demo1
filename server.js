@@ -33,7 +33,7 @@ app.get('/searches/new',showForm);
 
 app.post('/searches',creatSearch);
 
-
+app.post('/',myList);
 
 
 
@@ -102,4 +102,6 @@ function handelError (response){
 }
 
 
-
+function myList(req,res){
+  
+}
