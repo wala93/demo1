@@ -27,7 +27,7 @@ client.connect().then( () => {
 
 //-----------------------------------------------------------------------------------------
 
-app.get('/hello',renderHomePage);
+app.get('/',renderHomePage);
 
 app.get('/searches/new',showForm);
 
@@ -43,11 +43,20 @@ app.post('/searches',creatSearch);
 
 
 //-----------------------------------------------------------------------
-function Book(info) {
-  this.title = info.title || 'No title available'; // shortcircuit
-  this.author = info.authors || 'No author available';
-  this.description = info.description || 'No description available';
-  this.image = (info.imageLinks) ? info.imageLinks.smallThumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
+// function Book(info) {
+//   this.title = info.title || 'No title available'; // shortcircuit
+//   this.author = info.authors || 'No author available';
+//   this.description = info.description || 'No description available';
+//   this.image = (info.imageLinks) ? info.imageLinks.smallThumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
+// }
+
+function Book (info){
+
+  this.title=info.title ||'no title available';
+  this.author=info.author || 'no author available';
+  this.description=info.description || 'no description available';
+  this.image=(info.imageLinks)?info.imageLinks.smallThumbnail :`https://i.imgur.com/J5LVHEL.jpg`;
+this.isbn=info.industryIdentifiers.type;
 }
 
 
@@ -56,6 +65,7 @@ function Book(info) {
 //------------------------------------------------------------------------------------
 
 function renderHomePage(req,res){
+  console.log(' in homepage');
 
   res.render('pages/index');
 }
@@ -65,25 +75,7 @@ function showForm(req,res){
   res.render('pages/searches/new');
 }
 
-// function creatSearch (req,res){
-//   let url='https://www.googleapis.com/books/v1/volumes?q=';
-//   console.log(req.body.search);
-//   if (req.body.search[1]==='title'){url += `intitle:${req.body.search[0]}`;}
-//   if (req.body.search[1]==='author'){url += `inauthor:${req.body.search[0]}`;}
 
-//   superagent.get(url).then(
-//     y=>{
-//     //   console.log(y.body.items);
-//       y.body.items.map(resultApi=>{new Book(resultApi.volumeInfo);
-//         // console.log(resultApi.volumeInfo);
-//       });}
-//   ).then(results=>{
-//     console.log(results);
-//     res.render('pages/index',{searchResults:results});
-//   });
-
-
-// }
 
 function creatSearch(request, response) {
   let url = 'https://www.googleapis.com/books/v1/volumes?q=';
@@ -95,8 +87,19 @@ function creatSearch(request, response) {
   if (request.body.search[1] === 'title') { url += `+intitle:${request.body.search[0]}`; }
   if (request.body.search[1] === 'author') { url += `+inauthor:${request.body.search[0]}`; }
 
-  superagent.get(url)
-    .then(apiResponse => apiResponse.body.items.map(bookResult => new Book(bookResult.volumeInfo)))
-    .then(results => response.render('pages/index', { searchResults: results }))
-    .catch(error => response.status(500).send(`somthing wrong ${error}`));
+  superagent.get(url).then(y=> y.body.items.map(bookData=>new Book(bookData.volumeInfo) ) ).then(
+    results=>response.render('pages/searches/show',{searchResults:results})
+  ).catch(handelError(response));
 }
+
+
+function handelError (response){
+  return (error)=>{
+
+    console.log(error);
+    response.status(500).send(`there is an error ${error}` );
+  };
+}
+
+
+
