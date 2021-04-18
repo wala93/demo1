@@ -34,7 +34,7 @@ app.get('/searches/new',showForm);
 app.post('/searches',creatSearch);
 
 app.post('/',myList);
-
+app.get('/books/:id', showBook);
 
 
 
@@ -75,8 +75,8 @@ function showForm(req,res){
 function creatSearch(request, response) {
   let url = 'https://www.googleapis.com/books/v1/volumes?q=';
 
-  console.log(request.body);
-  console.log(request.body.search);
+  // console.log(request.body);
+  // console.log(request.body.search);
 
   // can we convert this to ternary?
   if (request.body.search[1] === 'title') { url += `+intitle:${request.body.search[0]}`; }
@@ -104,7 +104,21 @@ function myList(req,res){
   let values=[data.author,data.title,data.isbn,data.image,data.description];
   client.query(SQL,values).then(x=>{
     console.log(x.rows[0].id);
-    res.redirect(`book/${x.rows[0].id}`).catch(handelError(res));
-  });
+    res.redirect(`book/${x.rows[0].id}`);});
 
 }
+function showBook(request, response){
+  const sql ='SELECT * FROM books WHERE id = $1';
+  const idDB =[request.params.id];
+  console.log(request.params.id);
+  client.query(sql,idDB).then(data => {
+    // console.log(data.Results);
+    console.log(data.rows);
+    // response.send(data.rows)
+    response.render('pages/books/show' ,{books :data.rows});
+  }).catch((error=>{
+    console.log(error);
+    response.send('error');
+  }));
+}
+
