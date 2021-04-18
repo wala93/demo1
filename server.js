@@ -43,12 +43,6 @@ app.post('/',myList);
 
 
 //-----------------------------------------------------------------------
-// function Book(info) {
-//   this.title = info.title || 'No title available'; // shortcircuit
-//   this.author = info.authors || 'No author available';
-//   this.description = info.description || 'No description available';
-//   this.image = (info.imageLinks) ? info.imageLinks.smallThumbnail : 'https://i.imgur.com/J5LVHEL.jpg';
-// }
 
 function Book (info){
 
@@ -56,7 +50,7 @@ function Book (info){
   this.author=info.author || 'no author available';
   this.description=info.description || 'no description available';
   this.image=(info.imageLinks)?info.imageLinks.smallThumbnail :`https://i.imgur.com/J5LVHEL.jpg`;
-this.isbn=info.industryIdentifiers.type;
+  this.isbn=info.industryIdentifiers.type|| 'no isbn';
 }
 
 
@@ -65,9 +59,10 @@ this.isbn=info.industryIdentifiers.type;
 //------------------------------------------------------------------------------------
 
 function renderHomePage(req,res){
-  console.log(' in homepage');
+  // console.log(' in homepage');
+  let SQL='SELECT * FROM books';
+  client.query(SQL).then( x=> res.render('pages/index',{library:x.rows})).catch(error=>res.send(error));
 
-  res.render('pages/index');
 }
 
 function showForm(req,res){
@@ -103,5 +98,13 @@ function handelError (response){
 
 
 function myList(req,res){
-  
+  // console.log(req.body);
+  let data=req.body;
+  let SQL=`INSERT INTO books (author,title,isbn,image_url,description) VALUES ($1,$2,$3,$4,$5) RETURNING id;`;
+  let values=[data.author,data.title,data.isbn,data.image,data.description];
+  client.query(SQL,values).then(x=>{
+    console.log(x.rows[0].id);
+    res.redirect(`book/${x.rows[0].id}`).catch(handelError(res));
+  });
+
 }

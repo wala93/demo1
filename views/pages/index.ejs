@@ -11,9 +11,18 @@
 <body>
     <header>
         <h1>
-            hello world
+           my book collection
         </h1>
     </header>
+   <% library.foreach(book=>{ %>
    
+    <img src="<%= book.image %>" alt="">
+            <h3><%= book.title %></h3>
+            <p><%= book.author %></p>
+            <p><%= book.isbn %></p>
+            <p><%= book.description %></p>
+   
+   
+   <% }) %>
 </body>
 </html>
