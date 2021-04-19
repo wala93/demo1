@@ -33,11 +33,11 @@ app.get('/searches/new',showForm);
 
 app.post('/searches',creatSearch);
 
-app.post('/',myList);
+app.post('/',saveInDb);
 app.get('/books/:id', showBook);
+app.put('/books/:id',updateBook);
 
-
-
+app.delete('/books/:id',deleteBook);
 
 
 
@@ -97,7 +97,7 @@ function handelError (response){
 }
 
 
-function myList(req,res){
+function saveInDb(req,res){
   // console.log(req.body);
   let data=req.body;
   let SQL=`INSERT INTO books (author,title,isbn,image_url,description) VALUES ($1,$2,$3,$4,$5) RETURNING id;`;
@@ -122,3 +122,21 @@ function showBook(request, response){
   }));
 }
 
+function updateBook(req,res){
+  let id=req.params.id;
+  let SQL='UPDATE books SET author=$1,title=$2,image_url=$3,isbn=$4,description=$5 WHERE id= $6;';
+  let {author,title,image_url,isbn,description}=req.body;
+  let values=[author,title,image_url,isbn,description,id];
+  client.query(SQL,values).then(updated=>{
+    res.redirect('/');
+  });
+
+}
+
+function deleteBook(req,res){
+  let id=req.params.id;
+  let sql='DELETE FROM books WHERE id=$1';
+  let values=[id];
+  client.query(sql,values).then(result=>
+    res.redirect('/'));
+}

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/layout.css">
+    <link href="styles/reset.css" rel="stylesheet">
+    <link href="styles/base.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
@@ -21,6 +22,21 @@
             <p><%= book.description %></p>
           </div>
         </div>
+
+<form action="<%= book.id %>?_method=PUT" method="post">
+<input type="text" placeholder="<%= book.title %>" >
+<input type="text" placeholder="<%= book.author %> ">
+<input type="text" placeholder="<%= book.isbn %>">
+<input type="text" placeholder="<%= book.image %>" >
+<input type="text" placeholder="<%= book.description %>" >
+<button type="submit"> update</button>
+</form>
+
+
+<form action="<%= book.id %>?_method=DELETE" method="POST">
+  <button type="submit">DELETE</button>
+</form>
+
         <% }) %>
 </body>
 </html>
